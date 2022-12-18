@@ -84,14 +84,10 @@ public class BibEntryType implements Comparable<BibEntryType> {
     }
 
     public Set<Field> getDeprecatedFields(BibDatabaseMode mode) {
-        Set<Field> deprecatedFields;
-        if (mode == BibDatabaseMode.BIBLATEX) {
-            deprecatedFields = new LinkedHashSet<>(EntryConverter.FIELD_ALIASES_TEX_TO_LTX.keySet());
-            deprecatedFields.add(StandardField.YEAR);
-            deprecatedFields.add(StandardField.MONTH);
-        } else {
-            deprecatedFields = new LinkedHashSet<>(EntryConverter.FIELD_ALIASES_LTX_TO_TEX.keySet());
+        if (mode == BibDatabaseMode.BIBTEX) {
+            return Collections.emptySet();
         }
+        Set<Field> deprecatedFields = new LinkedHashSet<>(EntryConverter.FIELD_ALIASES_BIBTEX_TO_BIBLATEX.keySet());
 
         // Only the optional fields which are mapped to another BibLaTeX name should be shown as "deprecated"
         deprecatedFields.retainAll(getOptionalFieldsAndAliases());
