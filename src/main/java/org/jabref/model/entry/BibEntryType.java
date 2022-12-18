@@ -93,7 +93,13 @@ public class BibEntryType implements Comparable<BibEntryType> {
             deprecatedFields = new LinkedHashSet<>(EntryConverter.FIELD_ALIASES_LTX_TO_TEX.keySet());
         }
 
+        // Only the optional fields which are mapped to another BibLaTeX name should be shown as "deprecated"
         deprecatedFields.retainAll(getOptionalFieldsAndAliases());
+
+        // BibLaTeX aims for that field "date" is used
+        // Thus, year + month is deprecated
+        // However, year is used in the wild very often, so we do not mark that as default as deprecated
+        deprecatedFields.add(StandardField.MONTH);
 
         return deprecatedFields;
     }
@@ -105,14 +111,14 @@ public class BibEntryType implements Comparable<BibEntryType> {
     }
 
     /**
-     * Get list of all optional fields of this entry and their aliases.
+     * Get list of all optional fields of this entry and all fields being source for a BibTeX to BibLaTeX conversion.
      */
     private Set<Field> getOptionalFieldsAndAliases() {
         Set<Field> optionalFieldsAndAliases = new LinkedHashSet<>(getOptionalFields().size());
         for (BibField field : getOptionalFields()) {
             optionalFieldsAndAliases.add(field.getField());
-            if (EntryConverter.FIELD_ALIASES_LTX_TO_TEX.containsKey(field.getField())) {
-                optionalFieldsAndAliases.add(EntryConverter.FIELD_ALIASES_LTX_TO_TEX.get(field.getField()));
+            if (EntryConverter.FIELD_ALIASES_BIBTEX_TO_BIBLATEX.containsKey(field.getField())) {
+                optionalFieldsAndAliases.add(field.getField());
             }
         }
         return optionalFieldsAndAliases;
